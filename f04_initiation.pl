@@ -479,19 +479,22 @@ placeTroops(KodeArea,BanyakTroop) :- currentPlayer(X),
                                      getIdx(NOP,X,IDX),
                                      IDX == 1,
                                      numOfFreeSoldiersP1(FS1),
-                                     FS1 - BanyakTroop >= 0,
+                                     Comparator is FS1 - BanyakTroop,
+                                     Comparator >= 0,
                                      ownershipP1(OP1),
-                                     getElmt(OP1,IDX,AmmOfPpl),
-                                     AmmOfPpl > 0,
+                                     areaCodename(KodeArea,_,AreaIDX),
+                                     getElmt(OP1,AreaIDX,AmmOfPpl),
+                                     AmmOfPpl > 0, % if not milik orang lain
                                      retractall(newAmm(_)),
                                      S1 is BanyakTroop + AmmOfPpl,
                                      asserta(newAmm(S1)),
                                      newAmm(NA),
-                                     setEl(OP1,IDX,NA,NewLis),
+                                     setEl(OP1,AreaIDX,NA,NewLis),
                                      retractall(ownershipP1(_)),
                                      asserta(ownershipP1(NewLis)),
                                      retractall(soldiersLeft(_)),
-                                     asserta(soldiersLeft(FS1 - BanyakTroop)),
+                                     Subtraction is FS1 - BanyakTroop,
+                                     asserta(soldiersLeft(Subtraction)),
                                      soldiersLeft(SL),
                                      retractall(numOfFreeSoldiersP1(_)),
                                      asserta(numOfFreeSoldiersP1(SL)),
@@ -502,67 +505,26 @@ placeTroops(KodeArea,BanyakTroop) :- currentPlayer(X),
                                      getIdx(NOP,X,IDX),
                                      IDX == 2,
                                      numOfFreeSoldiersP2(FS2),
-                                     FS2 - BanyakTroop >= 0,
+                                     Comparator is FS2 - BanyakTroop,
+                                     Comparator >= 0,
                                      ownershipP2(OP2),
-                                     getElmt(OP2,IDX,AmmOfPpl),
+                                     areaCodename(KodeArea,_,AreaIDX),
+                                     getElmt(OP2,AreaIDX,AmmOfPpl),
                                      AmmOfPpl > 0,
                                      retractall(newAmm(_)),
-                                     asserta(newAmm(BanyakTroop + AmmOfPpl)),
+                                     Hasil is BanyakTroop + AmmOfPpl,
+                                     asserta(newAmm(Hasil)),
                                      newAmm(NA),
-                                     setEl(OP2,IDX,NA,NewLis),
+                                     setEl(OP2,AreaIDX,NA,NewLis),
                                      retractall(ownershipP2(_)),
                                      asserta(ownershipP2(NewLis)),
                                      retractall(soldiersLeft(_)),
-                                     asserta(soldiersLeft(FS2 - BanyakTroop)),
+                                     Subtraction is FS2 - BanyakTroop,
+                                     asserta(soldiersLeft(Subtraction)),
                                      soldiersLeft(SL),
                                      retractall(numOfFreeSoldiersP2(_)),
                                      asserta(numOfFreeSoldiersP2(SL)),
                                      nextPlayer.
-                            
-placeTroops(KodeArea,BanyakTroop) :- currentPlayer(X),
-                                     nameOfPlayers(NOP),
-                                     getIdx(NOP,X,IDX),
-                                     IDX == 3,
-                                     numOfFreeSoldiersP3(FS3),
-                                     FS3 - BanyakTroop >= 0,
-                                     ownershipP3(OP3),
-                                     getElmt(OP3,IDX,AmmOfPpl),
-                                     AmmOfPpl > 0,
-                                     retractall(newAmm(_)),
-                                     asserta(newAmm(BanyakTroop + AmmOfPpl)),
-                                     newAmm(NA),
-                                     setEl(OP3,IDX,NA,NewLis),
-                                     retractall(ownershipP1(_)),
-                                     asserta(ownershipP1(NewLis)),
-                                     retractall(soldiersLeft(_)),
-                                     asserta(soldiersLeft(FS3 - BanyakTroop)),
-                                     soldiersLeft(SL),
-                                     retractall(numOfFreeSoldiersP3(_)),
-                                     asserta(numOfFreeSoldiersP3(SL)),
-                                     nextPlayer.
-
-placeTroops(KodeArea,BanyakTroop) :- currentPlayer(X),
-                                     nameOfPlayers(NOP),
-                                     getIdx(NOP,X,IDX),
-                                     IDX == 4,
-                                     numOfFreeSoldiersP4(FS4),
-                                     FS4 - BanyakTroop >= 0,
-                                     ownershipP4(OP4),
-                                     getElmt(OP4,IDX,AmmOfPpl),
-                                     AmmOfPpl > 0,
-                                     retractall(newAmm(_)),
-                                     asserta(newAmm(BanyakTroop + AmmOfPpl)),
-                                     newAmm(NA),
-                                     setEl(OP4,IDX,NA,NewLis),
-                                     retractall(ownershipP4(_)),
-                                     asserta(ownershipP4(NewLis)),
-                                     retractall(soldiersLeft(_)),
-                                     asserta(soldiersLeft(FS4 - BanyakTroop)),
-                                     soldiersLeft(SL),
-                                     retractall(numOfFreeSoldiersP4(_)),
-                                     asserta(numOfFreeSoldiersP4(SL)),
-                                     nextPlayer.
-
 
 /*Helper otomatic*/
 non_zero_indices(List, Indices) :-
@@ -607,7 +569,7 @@ displayList([H|T]) :-
 
 %bagi secara otomatis
 otomatis(X) :-
-    X = 'O',
+    X =:= 1, !,
     ownershipP1(OP1),
     ownershipP2(OP2),
     replace_ones(OP1,2,NL1),
@@ -625,7 +587,11 @@ otomatis(X) :-
     asserta(numOfFreeSoldiersP2(NewFree)),
     write('Troop di assign secara otomatis'),
     nl,
-    !. 
+    !
+    ;
+    fail.
+
+
 
 
 init:- 
@@ -640,7 +606,7 @@ init:-
     bagiWilayah,
     nl,!,
     nl,
-    write('Anda ingin membagikan troops secara otomatis atau manual ? (O/M)'),
+    write('Apakah Anda ingin membagi troop secara otomatis ? (1/0) '),
     read(CD),
     otomatis(CD).
 

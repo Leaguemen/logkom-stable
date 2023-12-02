@@ -69,9 +69,7 @@ numOfOccupiedAreasPerContinent(Player, Continent, X):-
     continentRange(Continent, Start, End),
     (
         (ID =:= 1, ownershipP1(List), slice(List, Start, End+1, SplitList));
-        (ID =:= 2, ownershipP2(List), slice(List, Start, End+1, SplitList));
-        (ID =:= 3, ownershipP3(List), slice(List, Start, End+1, SplitList));
-        (ID =:= 4, ownershipP4(List), slice(List, Start, End+1, SplitList))
+        (ID =:= 2, ownershipP2(List), slice(List, Start, End+1, SplitList))
     ),
     countOccupiedAreas(SplitList, X).
 
