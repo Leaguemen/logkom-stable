@@ -46,9 +46,9 @@ getAreaName(AreaCode, AreaName):-areaCodename(AreaCode,AreaName,_).
 getAreaOccupier(Area, Player) :-
     areaCodename(_AreaCode, Area, Index),
     ((ownershipP1(List), getElmt(List, Index, NumSoldiers), NumSoldiers \== 0, !, nameOfPlayers(L), getElmt(L, 1, Player));
-    (ownershipP2(List), getElmt(List, Index, NumSoldiers), NumSoldiers \== 0, !, nameOfPlayers(L), getElmt(L, 2, Player));
-    (ownershipP3(List), getElmt(List, Index, NumSoldiers), NumSoldiers \== 0, !, nameOfPlayers(L), getElmt(L, 3, Player));
-    (ownershipP4(List), getElmt(List, Index, NumSoldiers), NumSoldiers \== 0, !, nameOfPlayers(L), getElmt(L, 4, Player))). 
+    (ownershipP2(List), getElmt(List, Index, NumSoldiers), NumSoldiers \== 0, !, nameOfPlayers(L), getElmt(L, 2, Player))).
+   /* (ownershipP3(List), getElmt(List, Index, NumSoldiers), NumSoldiers \== 0, !, nameOfPlayers(L), getElmt(L, 3, Player));
+    (ownershipP4(List), getElmt(List, Index, NumSoldiers), NumSoldiers \== 0, !, nameOfPlayers(L), getElmt(L, 4, Player))). */ 
 
 printListAreaName([]).
 printListAreaName([H]) :- getAreaName(H, AreaName), write(AreaName), nl.

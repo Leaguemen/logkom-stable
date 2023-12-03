@@ -1,48 +1,56 @@
-/*FACTS*/
-
-
-/*RULES*/
-
-/*Menambahkan tentara sebanyak NumSoldiers di Area milik pemain*/
-
-/*Mengecek tentara tambahan yang dimasukkan valid atau tidak*/
-isDraftSoldierValid(NumSoldiers):-
-    currentPlayer(Player), playerID(Player, ID),
-    (
-        (ID =:= 1, numOfFreeSoldiersP1(FreeSoldiers));
-        (ID =:= 2, numOfFreeSoldiersP2(FreeSoldiers));
-        (ID =:= 3, numOfFreeSoldiersP3(FreeSoldiers));
-        (ID =:= 4, numOfFreeSoldiersP4(FreeSoldiers))
-    ),
-    NumSoldiers>=FreeSoldiers.
-
-/*Tentara tambahan tidak mencukupi*/
-draft(Area, NumSoldiers) :-
-    currentPlayer(Player),
-    \+isDraftSoldierValid(NumSoldiers), !,
-    format("~w meletakkan ~w tentara tambahan di ~w.~n", [Player, NumSoldiers, Area]),
-    write("Tentara tidak mencukupi. Draft dibatalkan"), nl.
-
-/*Area tidak dimiliki pemain*/
-draft(Area, NumSoldiers) :-
-    currentPlayer(Player),
-    \+isAreaValid(Area, Player), !,
-    format("~w tidak memiliki wilayah ~w. Pemindahan dibatalkan.~n", [Player, Area]).
-
-/*Draft bisa dilakukan*/
-draft(Area, NumSoldiers) :-
-    currentPlayer(Player), playerID(Player, ID),
-    isDraftSoldierValid(NumSoldiers), isAreaValid(Area, Player), !,
-    format("~w meletakkan ~w tentara tambahan di ~w.~n", [Player, NumSoldiers, Area]),
-    areaCodename(_Code, Area, Index), soldiersInArea(Area, SoldiersInArea),
-    (
-        (ID =:= 1, numOfFreeSoldiersP1(FreeSoldiers), NewFreeSoldiers is FreeSoldiers-NumSoldiers, NewSoldiersInArea is SoldiersInArea+NumSoldiers, setEl(ownershipP1, Index, NewSoldiersInArea, NewOwnershipP1), retract(ownershipP1(_)), assert(ownershipP1(NewOwnershipP1)));
-        (ID =:= 2, numOfFreeSoldiersP2(FreeSoldiers), NewFreeSoldiers is FreeSoldiers-NumSoldiers, NewSoldiersInArea is SoldiersInArea+NumSoldiers, setEl(ownershipP2, Index, NewSoldiersInArea, NewOwnershipP2), retract(ownershipP2(_)), assert(ownershipP2(NewOwnershipP2)));
-        (ID =:= 3, numOfFreeSoldiersP3(FreeSoldiers), NewFreeSoldiers is FreeSoldiers-NumSoldiers, NewSoldiersInArea is SoldiersInArea+NumSoldiers, setEl(ownershipP3, Index, NewSoldiersInArea, NewOwnershipP3), retract(ownershipP3(_)), assert(ownershipP3(NewOwnershipP3)));
-        (ID =:= 4, numOfFreeSoldiersP4(FreeSoldiers), NewFreeSoldiers is FreeSoldiers-NumSoldiers, NewSoldiersInArea is SoldiersInArea+NumSoldiers, setEl(ownershipP4, Index, NewSoldiersInArea, NewOwnershipP4), retract(ownershipP4(_)), assert(ownershipP4(NewOwnershipP4)))
-    ),
-    format("Tentara total di ~w: ~w~n", [Area, NewSoldiersInArea]),
-    format("Jumlah Pasukan Tambahan Player ~w: ~w~n", [Player, NewFreeSoldiers]).
-
-
-
+draft(KodeArea,BanyakTroop) :- currentPlayer(X),
+                                     nameOfPlayers(NOP),
+                                     format('~w meletakkan ~w tentara tambahan di ~w.~n', [X, BanyakTroop, KodeArea]),
+                                     getIdx(NOP,X,IDX),
+                                     IDX == 1,
+                                     numOfFreeSoldiersP1(FS1),
+                                     Comparator is FS1 - BanyakTroop,
+                                     Comparator >= 0,
+                                     ownershipP1(OP1),
+                                     areaCodename(KodeArea,_,AreaIDX),
+                                     getElmt(OP1,AreaIDX,AmmOfPpl),
+                                     AmmOfPpl > 0, % if not milik orang lain
+                                     retractall(newAmm(_)),
+                                     S1 is BanyakTroop + AmmOfPpl,
+                                     asserta(newAmm(S1)),
+                                     newAmm(NA),
+                                     setEl(OP1,AreaIDX,NA,NewLis),
+                                     retractall(ownershipP1(_)),
+                                     asserta(ownershipP1(NewLis)),
+                                     retractall(soldiersLeft(_)),
+                                     Subtraction is FS1 - BanyakTroop,
+                                     asserta(soldiersLeft(Subtraction)),
+                                     soldiersLeft(SL),
+                                     retractall(numOfFreeSoldiersP1(_)),
+                                     asserta(numOfFreeSoldiersP1(SL)),
+                                     write('terdapat '),
+                                     write(SL),
+                                     write(' yang tersisa. ').
+draft(KodeArea,BanyakTroop) :- currentPlayer(X),
+                                     nameOfPlayers(NOP),
+                                     format('~w meletakkan ~w tentara tambahan di ~w.~n', [X, BanyakTroop, KodeArea]),
+                                     getIdx(NOP,X,IDX),
+                                     IDX == 2,
+                                     numOfFreeSoldiersP2(FS2),
+                                     Comparator is FS2 - BanyakTroop,
+                                     Comparator >= 0,
+                                     ownershipP2(OP2),
+                                     areaCodename(KodeArea,_,AreaIDX),
+                                     getElmt(OP2,AreaIDX,AmmOfPpl),
+                                     AmmOfPpl > 0,
+                                     retractall(newAmm(_)),
+                                     Hasil is BanyakTroop + AmmOfPpl,
+                                     asserta(newAmm(Hasil)),
+                                     newAmm(NA),
+                                     setEl(OP2,AreaIDX,NA,NewLis),
+                                     retractall(ownershipP2(_)),
+                                     asserta(ownershipP2(NewLis)),
+                                     retractall(soldiersLeft(_)),
+                                     Subtraction is FS2 - BanyakTroop,
+                                     asserta(soldiersLeft(Subtraction)),
+                                     soldiersLeft(SL),
+                                     retractall(numOfFreeSoldiersP2(_)),
+                                     asserta(numOfFreeSoldiersP2(SL)),
+                                     write('terdapat '),
+                                     write(SL),
+                                     write(' yang tersisa. ').
