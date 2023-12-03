@@ -26,6 +26,10 @@ playerID(Player, ID) :- nameOfPlayers(List), getIdx(List, Player, ID).
 /*RULES*/
 
 /*Memilih area untuk menyerang*/
+isAttackValid(InitialArea, NumSoldiers):-
+    soldiersInArea(InitialArea, X),
+    X1 is X-NumSoldiers, write(X1),X1 >= 1, NumSoldiers \== 0.
+
 chooseAreaAttacker(AreaAttacker) :-
     write('Pilihlah daerah yang ingin Anda mulai untuk melakukan penyerangan: '),
     read(AreaAttacker), nl, !.
@@ -147,7 +151,7 @@ attack :-
                 nl, write('Masukkan banyak tentara yang akan bertempur: '),
                 read(SoldierstoAttack),
                 (
-                    \+isMoveValid(AreaAttacker, SoldierstoAttack) ->
+                    \+isAttackValid(AreaAttacker, SoldierstoAttack) ->
                     write('Banyak tentara tidak valid. Silahkan input kembali.'),
                     fail
                     ;
