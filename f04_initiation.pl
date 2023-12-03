@@ -614,6 +614,7 @@ init:-
     bagiWilayah,
     nl,!,
     nl,
+    asserta(haveAttacked(0)),
     write('Apakah Anda ingin membagi troop secara otomatis ? (1/0) '),
     read(CD),
     otomatis(CD).
