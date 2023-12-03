@@ -476,6 +476,7 @@ bagiWilayah :- addAreaLis(X),
 
 placeTroops(KodeArea,BanyakTroop) :- currentPlayer(X),
                                      nameOfPlayers(NOP),
+                                     format('~w meletakkan ~w tentara tambahan di ~w.~n', [X, BanyakTroop, KodeArea]),
                                      getIdx(NOP,X,IDX),
                                      IDX == 1,
                                      numOfFreeSoldiersP1(FS1),
@@ -498,10 +499,14 @@ placeTroops(KodeArea,BanyakTroop) :- currentPlayer(X),
                                      soldiersLeft(SL),
                                      retractall(numOfFreeSoldiersP1(_)),
                                      asserta(numOfFreeSoldiersP1(SL)),
+                                     write('terdapat '),
+                                     write(SL),
+                                     write(' yang tersisa. '),
                                      nextPlayer.
 
 placeTroops(KodeArea,BanyakTroop) :- currentPlayer(X),
                                      nameOfPlayers(NOP),
+                                     format('~w meletakkan ~w tentara tambahan di ~w.~n', [X, BanyakTroop, KodeArea]),
                                      getIdx(NOP,X,IDX),
                                      IDX == 2,
                                      numOfFreeSoldiersP2(FS2),
@@ -524,6 +529,9 @@ placeTroops(KodeArea,BanyakTroop) :- currentPlayer(X),
                                      soldiersLeft(SL),
                                      retractall(numOfFreeSoldiersP2(_)),
                                      asserta(numOfFreeSoldiersP2(SL)),
+                                     write('terdapat '),
+                                     write(SL),
+                                     write(' yang tersisa. '),
                                      nextPlayer.
 
 /*Helper otomatic*/

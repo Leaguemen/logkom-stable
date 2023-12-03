@@ -23,7 +23,9 @@ consultFiles:-
     ['f03_players.pl'],
     ['f04_initiation.pl'],
     ['f08_attack.pl'],
-    ['f07_move.pl'].
+    ['f07_move.pl'],
+    ['f06_draft.pl'],
+    ['f05_endturn.pl'].
 
 
 startGame:-
