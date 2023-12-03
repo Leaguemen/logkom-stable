@@ -23,6 +23,26 @@ add_lists([H1|T1], [H2|T2], [H3|T3]):-
     H3 is H1 + H2,
     add_lists(T1, T2, T3).
 
+/*SLICE*/
+/* Basis */
+slice([], _Start, _End, []).
+
+slice(_List, Start, End, []) :- 
+    Start >= End.
+
+/* Rekurens */
+slice([_Head|Tail], Start, End, Result) :-
+    Start > 1,
+    NewStart is Start - 1,
+    NewEnd is End - 1,
+    slice(Tail, NewStart, NewEnd, Result).
+
+slice([Head|Tail], Start, End, [Head|Result]) :-
+    Start = 1,
+    NewEnd is End - 1,
+    slice(Tail, Start, NewEnd, Result).
+
+
 /*FACTS*/
 
 /*RULES*/

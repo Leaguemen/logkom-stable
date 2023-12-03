@@ -25,10 +25,36 @@ areaCodename(af3, niger, 22).
 areaCodename(au1, australia, 23).
 areaCodename(au2, newzealand, 24).
 
-continentRange(northAmerica, 1, 5).
+isInContinent(unitedstates, northamerica).
+isInContinent(canada, northamerica).
+isInContinent(greenland, northamerica).
+isInContinent(mexico, northamerica).
+isInContinent(carribean, northamerica).
+isInContinent(france, europe).
+isInContinent(england, europe).
+isInContinent(italy, europe).
+isInContinent(germany, europe).
+isInContinent(belgium, europe).
+isInContinent(indonesia, asia).
+isInContinent(russia, asia).
+isInContinent(china, asia).
+isInContinent(india, asia).
+isInContinent(kazakhstan, asia).
+isInContinent(japan, asia).
+isInContinent(saudi, asia).
+isInContinent(cuba, southamerica).
+isInContinent(brazil, southamerica).
+isInContinent(egypt, africa).
+isInContinent(southafrica, africa).
+isInContinent(niger, africa).
+isInContinent(australia, australia).
+isInContinent(newzealand, australia).
+
+
+continentRange(northamerica, 1, 5).
 continentRange(europe, 6, 10).
 continentRange(asia, 11, 17).
-continentRange(southAmerica, 18, 19).
+continentRange(southamerica, 18, 19).
 continentRange(africa, 20, 22).
 continentRange(australia, 23, 24).
 
