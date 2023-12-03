@@ -11,6 +11,13 @@
 :-dynamic(numOfFreeSoldiersP4/1).
 :-dynamic(currentPlayer/1).
 
+bonusSoldiers(northamerica, 3).
+bonusSoldiers(europe, 3).
+bonusSoldiers(asia, 5).
+bonusSoldiers(southamerica, 2).
+bonusSoldiers(africa, 2).
+bonusSoldiers(australia, 1).
+
 /*RULES*/ 
 /*Menghitung jumlah tentara tambahan selanjutnya berdasarkan wilayah*/
 numOfAddedSoldiers(Player, X) :-
@@ -30,7 +37,7 @@ playerID(Player, ID) :- nameOfPlayers(List), getIdx(List, Player, ID).
 
 /*Mengecek apakah pemain ID menguasai benua Continent*/
 isDominatingContinent(Player, Continent) :-
-    forall(inContinent(Area, Continent), getAreaOccupier(Area, Player)).
+    forall(isInContinent(Area, Continent), getAreaOccupier(Area, Player)).
 
 /*Menghitung jumlah wilayah yang dikuasai player*/
 countOccupiedAreas([],0).
@@ -69,7 +76,9 @@ numOfOccupiedAreasPerContinent(Player, Continent, X):-
     continentRange(Continent, Start, End),
     (
         (ID =:= 1, ownershipP1(List), slice(List, Start, End+1, SplitList));
-        (ID =:= 2, ownershipP2(List), slice(List, Start, End+1, SplitList))
+        (ID =:= 2, ownershipP2(List), slice(List, Start, End+1, SplitList));
+        (ID =:= 3, ownershipP3(List), slice(List, Start, End+1, SplitList));
+        (ID =:= 4, ownershipP4(List), slice(List, Start, End+1, SplitList))
     ),
     countOccupiedAreas(SplitList, X).
 
@@ -97,17 +106,17 @@ displayContinentTerritories(Player, Continent) :-
     format("Benua ~w (", [Continent]),
     numOfOccupiedAreasPerContinent(Player, Continent, OccupiedAreas), continentRange(Continent, X, Y), Z is Y-X+1,
     format("~w/~w)~n", [OccupiedAreas, Z]),
-    findall(Area, (inContinent(Area, Continent), getAreaOccupier(Area, Player)), Areas),
-    displayAreaTerritories(Player, Areas), !.
-
-displayAreaTerritories(_, []).
-displayAreaTerritories(Player, [Area|Rest]):-
-    areaCodename(Code, Name, _Index),
+    findall(Area, (isInContinent(Area, Continent), getAreaOccupier(Area, Player)), Areas),
+    displayAreaTerritories(Areas), !.
+  
+displayAreaTerritories([]):- !.
+displayAreaTerritories([Area|Rest]):-
+    areaCodename(Code, Area, _),
     format('~w~n', [Code]),
-    format("Nama              : ~w~n", [Name]),
+    format("Nama              : ~w~n", [Area]),
     soldiersInArea(Area, ActiveSoldiers),
     format("Jumlah tentara    : ~w~n~n", [ActiveSoldiers]),
-    displayAreaTerritories(Player, Rest).
+    displayAreaTerritories(Rest).
 
 checkPlayerTerritories(Player) :-
     playerID(Player, _ID),
