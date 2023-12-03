@@ -1,4 +1,4 @@
-/* TESTING TESTING TESTING TESTING TESTING
+/*% TESTING TESTING TESTING TESTING TESTING
 
 :- dynamic(ownershipP1/1).
 :- dynamic(ownershipP2/1).
@@ -7,7 +7,7 @@ nameOfPlayers([ayam,goreng]).
 currentPlayer(ayam).
 
 init :-
-    asserta(ownershipP1([5,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])),
+    asserta(ownershipP1([2,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])),
     asserta(ownershipP2([0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])),
     asserta(haveAttacked(0)),
     ['utilities.pl'],
@@ -17,9 +17,8 @@ init :-
     ownershipP1(List),
     write(List).
 
-playerID(Player, ID) :- nameOfPlayers(List), getIdx(List, Player, ID).
+% playerID(Player, ID) :- nameOfPlayers(List), getIdx(List, Player, ID).*/
 
-*/
 
 :- dynamic(haveAttacked/1).
 
@@ -156,11 +155,11 @@ attack :-
                     fail
                     ;
                     /*if num soldiers move valid*/
-                    retract(haveAttacked(_)),
-                    asserta(haveAttacked(1)),
                     displayMap,
                     chooseAreaDefender(AreaAttacker, AreaDefender),
                     getAreaOccupier(AreaDefender, PlayerDefender),
+                    retract(haveAttacked(_)),
+                    asserta(haveAttacked(1)),
                     /*Play Game*/
                     write('Perang telah dimulai.'), nl,
                     format('~w melempar dadu...', [Player]), nl,
@@ -178,28 +177,35 @@ attack :-
                         /*Mekanisme Menang*/
                         write('Anda menang!'),nl,
                         format('Wilayah ~w sekarang dikuasai oleh Anda.~n', [AreaDefender]),
+                        repeat,
                         format('Silahkan tentukan banyaknya tentara yang menetap di wilayah ~w: ', [AreaDefender]),
                         read(NumSoldiersMove),
-                        acquireArea(AreaAttacker, AreaDefender, NumSoldiersMove),
-                        soldiersInArea(AreaAttacker, NewSoldiersInAreaAttacker),
-                        format('Tentara di wilayah ~w: ~w~n', [AreaAttacker, NewSoldiersInAreaAttacker]),
-                        soldiersInArea(AreaDefender, NewSoldiersInAreaDefender),
-                        format('Tentara di wilayah ~w: ~w~n', [AreaDefender, NewSoldiersInAreaDefender]), !,
                         (
-                            (
-                                isWin(Player),
-                                format('Selamat!~nPlayer ~w berhasil mendominasi dunia~n', [Player]),
-                                write('Permainan Selesai!'), nl,
-                                write('  ___ ___        .__.__    ________                 .__               __                '), nl,
-                                write(' /   |   \\_____  |__|  |   \\______ \\   ____   _____ |__| ____ _____ _/  |_  ___________ '), nl,
-                                write('/    ~    \\__  \\ |  |  |    |    |  \\ /  _ \\ /     \\|  |/    \\\\__  \\\\   __\\/  _ \\_  __ \\'), nl,
-                                write('\\    Y    // __ \\|  |  |__  |    `   (  <_> )  Y Y  \\  |   |  \\/ __ \\|  | (  <_> )  | \\/'), nl,
-                                write(' \\___|_  /(____  /__|____/ /_______  /\\____/|__|_|  /__|___|  (____  /__|  \\____/|__|   '), nl,
-                                write('       \\/      \\/                  \\/             \\/        \\/     \\/                   '), nl,
-                                halt
-                                )
+                            \+isAttackValid(AreaAttacker, NumSoldiersMove) ->
+                            write('Banyak tentara tidak valid. Silahkan input kembali.'),
+                            fail
                             ;
-                            true
+                            acquireArea(AreaAttacker, AreaDefender, NumSoldiersMove),
+                            soldiersInArea(AreaAttacker, NewSoldiersInAreaAttacker),
+                            format('Tentara di wilayah ~w: ~w~n', [AreaAttacker, NewSoldiersInAreaAttacker]),
+                            soldiersInArea(AreaDefender, NewSoldiersInAreaDefender),
+                            format('Tentara di wilayah ~w: ~w~n', [AreaDefender, NewSoldiersInAreaDefender]), !,
+                            (
+                                (
+                                    isWin(Player),
+                                    format('Selamat!~nPlayer ~w berhasil mendominasi dunia~n', [Player]),
+                                    write('Permainan Selesai!'), nl,
+                                    write('  ___ ___        .__.__    ________                 .__               __                '), nl,
+                                    write(' /   |   \\_____  |__|  |   \\______ \\   ____   _____ |__| ____ _____ _/  |_  ___________ '), nl,
+                                    write('/    ~    \\__  \\ |  |  |    |    |  \\ /  _ \\ /     \\|  |/    \\\\__  \\\\   __\\/  _ \\_  __ \\'), nl,
+                                    write('\\    Y    // __ \\|  |  |__  |    `   (  <_> )  Y Y  \\  |   |  \\/ __ \\|  | (  <_> )  | \\/'), nl,
+                                    write(' \\___|_  /(____  /__|____/ /_______  /\\____/|__|_|  /__|___|  (____  /__|  \\____/|__|   '), nl,
+                                    write('       \\/      \\/                  \\/             \\/        \\/     \\/                   '), nl,
+                                    halt
+                                    )
+                                ;
+                                true
+                            )
                         )
                     )
                 )
