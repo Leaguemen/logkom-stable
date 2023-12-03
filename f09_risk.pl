@@ -1,3 +1,5 @@
+consult('utilities.pl').
+consult('f04_initiation.pl').
 /*FACTS*/
 % createList(List):-
 %     List = ["ceasefireOrder", "superSoldierSerum", "auxiliaryTroops", "supplyChainIssue", "rebellion"].
@@ -11,9 +13,11 @@
 % onCeasefireP3(X).
 % onCeasefireP4(X).
 
-:- dynamic(supplyChainIssue/1).
-:- dynamic(auxiliaryTroops/1).
+% ambil row matrix (tadinya kalau mau pake list, nnti ubah asscinya ke karakter pake atom_codes/2)
+% get_row(Matrix, RowIndex, Row) :-
+%     nth0(RowIndex, Matrix, Row).
 
+% untuk mengaktifkan risk
 setCeasefire:-
     currentPlayer(Name),
     format("Player ~w mendapatkan risk card CEASEFIRE ORDER.~nHingga giliran berikutnya, wilayah pemain tidak dapat diserang oleh lawan.~n", [Name]),
@@ -24,7 +28,6 @@ setCeasefire:-
         (ID =:= 3, retract(onCeasefireP1(_)), assertz(onCeasefireP1(true)));
         (ID =:= 4, retract(onCeasefireP1(_)), assertz(onCeasefireP1(true)))
     ).
-
 setSuperSoldier:-
     currentPlayer(Name),
     format("Player ~w mendapatkan risk card SUPER SOLDIER SERUM.~nHingga giliran berikutnya, semua hasil lemparan dadu saat penyerangan dan pertahanan akan bernilai 6.~n", [Name]),
@@ -35,12 +38,16 @@ setSuperSoldier:-
         (ID =:= 3, retract(onCeasefireP1(_)), assertz(onCeasefireP1(true)));
         (ID =:= 4, retract(onCeasefireP1(_)), assertz(onCeasefireP1(true)))
     ).
-
 setAuxiliary:-
     currentPlayer(Name),
     format("Player ~w mendapatkan risk card AUXILIARY TROOPS.~nPada giliran berikutnya, tentara tambahan yang didapatkan pemain akan bernilai 2 kali lipat.~n", [Name]),
-    retractall(auxiliaryTroops(_)), asserta(auxiliaryTroops(true)), !.
-
+    playerID(Name, ID),
+    (
+        (ID =:= 1, retract(onCeasefireP1(_)), assertz(onCeasefireP1(true)));
+        (ID =:= 2, retract(onCeasefireP1(_)), assertz(onCeasefireP1(true)));
+        (ID =:= 3, retract(onCeasefireP1(_)), assertz(onCeasefireP1(true)));
+        (ID =:= 4, retract(onCeasefireP1(_)), assertz(onCeasefireP1(true)))
+    ).
 setRebellion:-
     currentPlayer(Name),
     format("Player ~w mendapatkan risk card REBELLION.~nSalah satu wilayah acak pemain akan berpindah kekuasaan menjadi milik lawan (acak).~n", [Name]),
@@ -51,8 +58,6 @@ setRebellion:-
         (ID =:= 3, retract(onCeasefireP1(_)), assertz(onCeasefireP1(true)));
         (ID =:= 4, retract(onCeasefireP1(_)), assertz(onCeasefireP1(true)))
     ).
-
-
 setDisease:-
     currentPlayer(Name),
     format("Player ~w mendapatkan risk card DISEASE OUTBREAK.~nSemua hasil lemparan dadu saat penyerangan dan pertahanan hingga giliran berikutnya akan bernilai 1.~n", [Name]),
@@ -63,12 +68,30 @@ setDisease:-
         (ID =:= 3, retract(onCeasefireP1(_)), assertz(onCeasefireP1(true)));
         (ID =:= 4, retract(onCeasefireP1(_)), assertz(onCeasefireP1(true)))
     ).
-
 setSupply:-
     currentPlayer(Name),
     format("Player ~w mendapatkan risk card SUPPLY CHAIN ISSUE.~nPemain tidak mendapatkan tentara tambahan pada giliran berikutnya.~n", [Name]),
-    retractall(supplyChainIssue(_)), asserta(supplyChainIssue(true)).
+    playerID(Name, ID),
+    (
+        (ID =:= 1, retract(onCeasefireP1(_)), assertz(onCeasefireP1(true)));
+        (ID =:= 2, retract(onCeasefireP1(_)), assertz(onCeasefireP1(true)));
+        (ID =:= 3, retract(onCeasefireP1(_)), assertz(onCeasefireP1(true)));
+        (ID =:= 4, retract(onCeasefireP1(_)), assertz(onCeasefireP1(true)))
+    ).
 
+% Untuk menonaktifkan risk
+offCeasefire :-
+    currentPlayer(Name),
+    playerID(Name, ID),
+    (
+        (ID =:= 1, retract(onCeasefireP1(_)), assertz(onCeasefireP1(false)));
+        (ID =:= 2, retract(onCeasefireP1(_)), assertz(onCeasefireP1(false)));
+        (ID =:= 3, retract(onCeasefireP1(_)), assertz(onCeasefireP1(false)));
+        (ID =:= 4, retract(onCeasefireP1(_)), assertz(onCeasefireP1(false)))
+    ).
+%dua fakta di bawah hanya untuk testing 
+currentPlayer(rifki).
+playerID(rifki, 2).
 risk:-
     random(1,7,Idx),
     (
@@ -78,4 +101,4 @@ risk:-
         (Idx =:= 4, setRebellion);
         (Idx =:= 5, setDisease);
         (Idx =:= 6, setSupply)
-    ), !.
+    ).
